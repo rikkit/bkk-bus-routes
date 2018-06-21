@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>(เลเยอร์ที่ไม่มีชื่อ)</name>
+    <Style id="icon-1532-3949AB-normal">
+      <IconStyle>
+        <color>ffab4939</color>
+        <scale>1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1532-3949AB-highlight">
+      <IconStyle>
+        <color>ffab4939</color>
+        <scale>1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1532-3949AB">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1532-3949AB-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1532-3949AB-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-1532-3949AB-nodesc-normal">
+      <IconStyle>
+        <color>ffab4939</color>
+        <scale>1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-1532-3949AB-nodesc-highlight">
+      <IconStyle>
+        <color>ffab4939</color>
+        <scale>1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-1532-3949AB-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1532-3949AB-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1532-3949AB-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-3F5BA9-3131-normal">
+      <LineStyle>
+        <color>ffa95b3f</color>
+        <width>3.131</width>
+      </LineStyle>
+    </Style>
+    <Style id="line-3F5BA9-3131-highlight">
+      <LineStyle>
+        <color>ffa95b3f</color>
+        <width>4.6965</width>
+      </LineStyle>
+    </Style>
+    <StyleMap id="line-3F5BA9-3131">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-3F5BA9-3131-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-3F5BA9-3131-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="line-DB4436-3713-normal">
+      <LineStyle>
+        <color>ff3644db</color>
+        <width>3.713</width>
+      </LineStyle>
+    </Style>
+    <Style id="line-DB4436-3713-highlight">
+      <LineStyle>
+        <color>ff3644db</color>
+        <width>5.5695</width>
+      </LineStyle>
+    </Style>
+    <StyleMap id="line-DB4436-3713">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#line-DB4436-3713-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#line-DB4436-3713-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark>
+      <name>1009 (ไป สะพานใหม่)</name>
+      <description>Route 1009 Go to SaphamMai</description>
+      <styleUrl>#line-DB4436-3713</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          100.6601179,13.8953063,0
+          100.6619525,13.8984516,0
+          100.6866074,13.9214253,0
+          100.6634331,13.9210088,0
+          100.6344008,13.9222584,0
+          100.633918,13.9223105,0
+          100.6255496,13.9073768,0
+          100.6247985,13.9065957,0
+          100.6167197,13.9036172,0
+          100.6161726,13.9033777,0
+          100.6131577,13.9013885,0
+          100.6129646,13.9014093,0
+          100.6122458,13.901753,0
+          100.6072247,13.8932754,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>1009 (ไป สายไหม)</name>
+      <description>Route 1009 Go to SaiMai</description>
+      <styleUrl>#line-3F5BA9-3131</styleUrl>
+      <LineString>
+        <tessellate>1</tessellate>
+        <coordinates>
+          100.6072247,13.8932754,0
+          100.6056315,13.8905258,0
+          100.6054866,13.8905935,0
+          100.6121653,13.9019405,0
+          100.6131041,13.9015083,0
+          100.6133187,13.901628,0
+          100.6149495,13.9027528,0
+          100.6163228,13.9036172,0
+          100.6173313,13.9040442,0
+          100.6246054,13.906679,0
+          100.6252491,13.9072831,0
+          100.6255281,13.9076267,0
+          100.6339985,13.9227218,0
+          100.6348997,13.9223417,0
+          100.6633472,13.921217,0
+          100.6868863,13.9215919,0
+          100.6868702,13.9214826,0
+          100.6620061,13.8982328,0
+          100.6615448,13.8974622,0
+          100.6602788,13.895223,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+    <Placemark>
+      <name>สำนักงานเขตสายไหม</name>
+      <description>SaiMai</description>
+      <styleUrl>#icon-1532-3949AB</styleUrl>
+      <Point>
+        <coordinates>
+          100.660193,13.8952646,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>สะพานใหม่</name>
+      <styleUrl>#icon-1532-3949AB-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          100.6072247,13.8932754,0
+        </coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>
