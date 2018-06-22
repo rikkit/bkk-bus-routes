@@ -118,7 +118,12 @@ namespace RouteParser
       var distinctMapIds = mapIds.Where(id => !String.IsNullOrWhiteSpace(id)).Distinct().ToList();
       Console.WriteLine($"Downloading {distinctMapIds.Count} routes ({mapIds.Length - distinctMapIds.Count} dupes)");
 
-      await Task.WhenAll(distinctMapIds.Select(id => DownloadGMapsKml(id, RoutesFolder)));
+      await Task.WhenAll(distinctMapIds.Select(async (mapId) => {
+        var kml = await GMapsClient.GetMapKmlAsync(mapId);
+
+        var outPath = Path.Combine(RoutesFolder, $"{mapId}.kml");
+        await File.WriteAllTextAsync(outPath, kml);
+      }));
     }
 
     private static async Task<string> GetMapIdFromUrl(Uri uri)
@@ -147,21 +152,6 @@ namespace RouteParser
       var mapId = qs["mid"];
 
       return mapId;
-    }
-
-    private static async Task DownloadGMapsKml(string mapId, string saveFolder)
-    {
-      // https://www.google.com/maps/d/u/0/kml?mid={mapId}&forcekml=1
-      var kmlUriBuilder = new UriBuilder("https://www.google.com/maps/d/u/0/kml");
-      var kmlUriQs = HttpUtility.ParseQueryString("");
-      kmlUriQs["forcekml"] = "1";
-      kmlUriQs["mid"] = mapId;
-      kmlUriBuilder.Query = kmlUriQs.ToString();
-
-      var kml = await HttpClient.GetStringAsync(kmlUriBuilder.ToString());
-
-      var outPath = Path.Combine(saveFolder, $"{mapId}.kml");
-      await File.WriteAllTextAsync(outPath, kml);
     }
 
     private static async Task<BusService> GetServiceFromKml(string filePath)
