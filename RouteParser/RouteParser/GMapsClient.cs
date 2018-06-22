@@ -32,11 +32,12 @@ class PlaceDetail {
 
 class GMapsClient
 {
-  private HttpClient httpClient = new HttpClient();
+  private HttpClient httpClient;
   private string api_key;
 
-  public GMapsClient(string api_key)
+  public GMapsClient(HttpClient httpClient, string api_key)
   {
+    this.httpClient = httpClient;
     this.api_key = api_key;
   }
 
