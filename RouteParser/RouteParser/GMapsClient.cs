@@ -7,33 +7,6 @@ using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json.Linq;
 
-class Coordinate
-{
-  public double Lat { get; private set; }
-  public double Lon { get; private set; }
-
-  public Coordinate(double lat, double lon)
-  {
-    this.Lat = lat;
-    this.Lon = lon;
-  }
-}
-
-class SnapToRoadResult
-{
-  public Coordinate Coordinate { get; internal set; }
-  public string PlaceId { get; internal set; }
-}
-
-class PlaceDetail
-{
-  public string Name { get; internal set; }
-  public string PlaceId { get; internal set; }
-  public string FormattedAddress { get; internal set; }
-  public Coordinate Location { get; internal set; }
-  public Uri Uri { get; internal set; }
-}
-
 class GMapsClient
 {
   private HttpClient httpClient;
