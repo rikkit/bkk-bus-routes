@@ -55,7 +55,9 @@ namespace RouteParser
       var files = Directory.GetFiles(RoutesFolder);
       foreach (var filePath in files)
       {
-        await ParseFile(filePath);
+        var service = await GetServiceFromKml(filePath);        
+
+        Console.WriteLine($"Found service {service.Name} - {service.Routes.Count} routes ({service.Routes.Sum(r => r.Nodes.Count)} total nodes), {service.Landmarks.Count} landmarks");
       }
     }
 
@@ -115,7 +117,7 @@ namespace RouteParser
       var mapIds = await Task.WhenAll(mapLinks.Select(link => GetMapIdFromUrl(link)));
       var distinctMapIds = mapIds.Where(id => !String.IsNullOrWhiteSpace(id)).Distinct().ToList();
       Console.WriteLine($"Downloading {distinctMapIds.Count} routes ({mapIds.Length - distinctMapIds.Count} dupes)");
-      
+
       await Task.WhenAll(distinctMapIds.Select(id => DownloadGMapsKml(id, RoutesFolder)));
     }
 
@@ -147,8 +149,8 @@ namespace RouteParser
       return mapId;
     }
 
-    private static async Task DownloadGMapsKml(string mapId, string saveFolder) {
-
+    private static async Task DownloadGMapsKml(string mapId, string saveFolder)
+    {
       // https://www.google.com/maps/d/u/0/kml?mid={mapId}&forcekml=1
       var kmlUriBuilder = new UriBuilder("https://www.google.com/maps/d/u/0/kml");
       var kmlUriQs = HttpUtility.ParseQueryString("");
@@ -162,20 +164,23 @@ namespace RouteParser
       await File.WriteAllTextAsync(outPath, kml);
     }
 
-    private static async Task ParseFile(string filePath)
+    private static async Task<BusService> GetServiceFromKml(string filePath)
     {
       using (var reader = File.OpenText(filePath))
       {
         var kml = KmlFile.Load(reader);
         var nodes = kml.Root.Flatten();
         var document = nodes.OfType<Document>().Single();
-        Console.WriteLine($"Route: {document.Name}");
+
+        var routes = new List<Route>();
+        var landmarks = new List<PlaceDetail>();
 
         var placemarks = nodes.OfType<Placemark>();
         foreach (var placemark in placemarks)
         {
-          var lines = placemark.Geometry.Flatten().OfType<LineString>();
-          foreach (var line in lines)
+          var geometries = placemark.Geometry.Flatten().ToLookup(geometry => geometry.GetType());
+
+          foreach (LineString line in geometries[typeof(LineString)])
           {
             var coordinates = line.Coordinates.Select(pair => new Coordinate(pair.Latitude, pair.Longitude));
             var snapped = await GMapsClient.SnapToRoadsAsync(coordinates);
@@ -185,32 +190,31 @@ namespace RouteParser
               placeIds.Select(id => GMapsClient.GetPlaceDetailAsync(id))
             );
 
-            // foreach (var place in places) {
-            //   Console.WriteLine($"{place.Name} {place.Location.Lat},{place.Location.Lon}");
-            // }
-
-            // Sequential dedupe
-            var placeNames = new Stack<string>();
-            foreach (var place in places)
+            var route = new Route
             {
-              if (placeNames.Count > 0 && placeNames.Peek() == place.Name)
-              {
-                continue;
-              }
+              Name = placemark.Name,
+              Nodes = places,
+            };
 
-              placeNames.Push(place.Name);
-            }
+            routes.Append(route);
+          }
 
-            foreach (var placeName in placeNames)
-            {
-              Console.WriteLine(placeName);
-            }
+          foreach (Point point in geometries[typeof(Point)])
+          {
+            // TODO get place id from coordinate?
+            // Could just use embedded info.
           }
         }
 
-        Console.WriteLine();
+        var service = new BusService
+        {
+          Name = document.Name,
+          Routes = routes,
+          Landmarks = landmarks,
+        };
+
+        return service;
       }
     }
-
   }
 }
