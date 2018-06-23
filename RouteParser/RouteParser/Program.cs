@@ -53,12 +53,23 @@ namespace RouteParser
       await ScrapeRoutesAsync(RoutesFolder);
 
       var files = Directory.GetFiles(RoutesFolder);
-      foreach (var filePath in files)
-      {
-        var service = await GetServiceFromKml(filePath);        
 
-        Console.WriteLine($"Found service {service.Name} - {service.Routes.Count} routes ({service.Routes.Sum(r => r.Nodes.Count)} total nodes), {service.Landmarks.Count} landmarks");
-      }
+      var services = await Task.WhenAll(files.Select(async (filePath) =>
+      {
+        try
+        {
+          var service = await GetServiceFromKml(filePath);
+
+          Console.WriteLine($"Found service {service.Name} - {service.Routes.Count} routes ({service.Routes.Sum(r => r.Nodes.Count)} total nodes), {service.Landmarks.Count} landmarks");
+
+          return service;
+        }
+        catch (Exception e)
+        {
+          Console.WriteLine($"Error when parsing {filePath}: {e.Message}. Skipping file...");
+          return null;
+        }
+      }));     
     }
 
     private static async Task ScrapeRoutesAsync(string saveDirectory)
@@ -118,7 +129,8 @@ namespace RouteParser
       var distinctMapIds = mapIds.Where(id => !String.IsNullOrWhiteSpace(id)).Distinct().ToList();
       Console.WriteLine($"Downloading {distinctMapIds.Count} routes ({mapIds.Length - distinctMapIds.Count} dupes)");
 
-      await Task.WhenAll(distinctMapIds.Select(async (mapId) => {
+      await Task.WhenAll(distinctMapIds.Select(async (mapId) =>
+      {
         var kml = await GMapsClient.GetMapKmlAsync(mapId);
 
         var outPath = Path.Combine(RoutesFolder, $"{mapId}.kml");
