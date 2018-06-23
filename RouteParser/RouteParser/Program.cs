@@ -60,7 +60,7 @@ namespace RouteParser
         {
           var service = await GetServiceFromKml(filePath);
 
-          Console.WriteLine($"Found service {service.Name} - {service.Routes.Count} routes ({service.Routes.Sum(r => r.Nodes.Count)} total nodes), {service.Landmarks.Count} landmarks");
+          Console.WriteLine($"Found service {service.Name} - {service.Routes.Count} routes ({service.Routes.Sum(r => r.Places.Count)} total nodes), {service.Landmarks.Count} landmarks");
 
           return service;
         }
@@ -69,7 +69,11 @@ namespace RouteParser
           Console.WriteLine($"Error when parsing {filePath}: {e.Message}. Skipping file...");
           return null;
         }
-      }));     
+      }));
+
+      var network = BuildServiceNetwork(services);
+      var connectionCount = network.Nodes.Sum(n => n.Value.Inbound.Count + n.Value.Outbound.Count);
+      Console.WriteLine($"Built service network 🎉\n\t{network.Services.Count} services\n\t{network.Nodes.Count} nodes\n\t{connectionCount} total connections");
     }
 
     private static async Task ScrapeRoutesAsync(string saveDirectory)
@@ -195,7 +199,7 @@ namespace RouteParser
             var route = new Route
             {
               Name = placemark.Name,
-              Nodes = places,
+              Places = places,
             };
 
             routes.Append(route);
@@ -217,6 +221,69 @@ namespace RouteParser
 
         return service;
       }
+    }
+
+    private static ServiceNetwork BuildServiceNetwork(BusService[] services)
+    {
+      var nodeMap = new Dictionary<string, Node>();
+
+      foreach (var service in services)
+      {
+        foreach (var route in service.Routes)
+        {
+          Node previousNode = null;
+
+          foreach (var place in route.Places)
+          {
+            Node currentNode;
+            if (nodeMap.ContainsKey(place.PlaceId))
+            {
+              currentNode = nodeMap[place.PlaceId];
+            }
+            else
+            {
+              currentNode = new Node
+              {
+                Place = place,
+                Inbound = new List<Edge>(),
+                Outbound = new List<Edge>(),
+              };
+
+              nodeMap[place.PlaceId] = currentNode;
+            }
+
+            if (previousNode == null)
+            {
+              continue;
+            }
+
+            var edge = new Edge
+            {
+              Service = service,
+              Route = route,
+              From = previousNode,
+              To = currentNode,
+            };
+
+            previousNode.Outbound.Append(edge);
+            currentNode.Inbound.Append(edge);
+          }
+        }
+      }
+
+      // Centre the network at the point with most connections
+      var networkRoot = nodeMap.Values
+        .OrderByDescending(node => node.Inbound.Count + node.Outbound.Count)
+        .First();
+
+      var network = new ServiceNetwork
+      {
+        Nodes = nodeMap,
+        Root = networkRoot,
+        Services = services,
+      };
+
+      return network;
     }
   }
 }
